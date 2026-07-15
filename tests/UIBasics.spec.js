@@ -109,7 +109,7 @@ test('codegen generated code',async({page})=>{
   await page.locator('[data-test="continue"]').click();
   await page.locator('[data-test="finish"]').click();
 });
-test.only('playwright special locators', async({page})=>{
+test('playwright special locators', async({page})=>{
 
     await page.goto("https://selenium.qabible.in/index.php");
     //await page.locator("//a[normalize-space()='Input Form']").click();
@@ -138,4 +138,34 @@ test.only('playwright special locators', async({page})=>{
     await page.getByRole("button",{name:'Show Message'}).click();
     await page.getByText("Your Message : Hello").isVisible();
     await page.pause();
+})
+
+const date=12;
+const month=11;
+const year=1997;
+test.only("Calendar validation",async({page})=>{
+    await page.goto("https://selenium.qabible.in/index.php");
+    await page.getByRole("link",{name:'Date Pickers'}).click();
+    await page.getByText("Bootstrap Date Picker").click();
+    await page.waitForLoadState('networkidle');
+    await page.locator('#single-input-field').click();
+    await page.locator('.datepicker-days th.datepicker-switch').click();
+    await page.locator('.datepicker-months th.datepicker-switch').click();
+    const targetyear=1997;
+    while(true)
+    {
+        const currentdecade=await page.locator('.datepicker-years th.datepicker-switch').textContent();
+        const startdecade= parseInt(currentdecade.split('-')[0])
+        if(targetyear>=startdecade && targetyear<=startdecade+9)
+        {
+          break;
+        }
+        await page.locator('.datepicker-years th.prev').click();
+    }
+        await page.getByText(targetyear.toString(),{exact:true}).click();
+        await page.locator('.month').nth(month-1).click();
+        await page.getByText(date.toString(),{exact:true}).first().click();
+        await page.pause();
+
+
 })
